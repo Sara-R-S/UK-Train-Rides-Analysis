@@ -34,14 +34,14 @@ By exploring this data, we hope to identify patterns and trends that can inform 
 ## Methodology
 * **Data Preprocessing & Cleaning** using Python (Pandas,matplotlib) and **Data Modelling** using SQL. 
 * **Exploratory Data Analysis** using Python (pandas, matplotlib, seaborn) and SQL.
-* **Forecasting** using Python using (pandas, scikit-learn, matplotlib, seaborn).
+* **Forecasting** using Python (pandas, scikit-learn, matplotlib, seaborn).
 * **Interactive Visualisation** using Tableau.
 
 ## Key Findings
 In progress...
 
 ## Recommendations
-In progress...* 
+In progress...
 
 ## Usage
 1. Clone this repository:
