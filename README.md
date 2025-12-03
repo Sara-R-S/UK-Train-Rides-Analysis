@@ -54,7 +54,7 @@ In progress...
    ```
 3. Install dependencies:
    ```bash
-   pip install pandas matplotlib scikit-learn
+   pip install pandas matplotlib seaborn scikit-learn
    ```
 4. Run the Jupyter notebooks in sequence:
    * `Preprocessing.ipynb`
