@@ -43,8 +43,6 @@ CREATE TABLE railway_data (
 );
 GO
 
-
-
 INSERT INTO railway_data
 SELECT 
     [Transaction_ID],
@@ -80,7 +78,7 @@ GO
 
 
 
---DIM TICKET
+-- DIM TICKET
 create table DimTicket(
 TicketID int identity (1,1)primary key,
 TicketClass varchar(50),
@@ -93,7 +91,7 @@ select distinct [Ticket Class],[Ticket Type],[Railcard]
 from dbo.railway_data
 
 
---DIM DATE
+-- DIM DATE
 
 CREATE TABLE DimDate (
     DateID INT PRIMARY KEY,       
@@ -107,9 +105,7 @@ CREATE TABLE DimDate (
     DayName VARCHAR(20),
     WeekOfYear INT,
     IsWeekend BIT
-)
-
- 
+) 
 ;WITH AllDates AS (
     SELECT DISTINCT CAST([Purchase Timestamp] AS DATE) AS TheDate
     FROM dbo.railway_data
@@ -145,8 +141,7 @@ SELECT
     CASE WHEN DATENAME(weekday, TheDate) IN ('Friday', 'Saturday') THEN 1 ELSE 0 END
 FROM AllDates;
 
-
---DIM Purchase
+-- DIM Purchase
 
 CREATE TABLE DimPurchase (
     TransactionID VARCHAR(50) PRIMARY KEY,       
@@ -177,10 +172,6 @@ FROM  dbo.railway_data
 WHERE [Purchase Timestamp] IS NOT NULL;
 
 
--- Drop and recreate DimJourney with TransactionID
-DROP TABLE IF EXISTS FactJourney;
-DROP TABLE IF EXISTS DimJourney;
-
 CREATE TABLE DimJourney(
     JourneyID INT IDENTITY(1,1) PRIMARY KEY,
     TransactionID VARCHAR(50) UNIQUE NOT NULL,  -- Add this
@@ -194,7 +185,6 @@ CREATE TABLE DimJourney(
     FOREIGN KEY (DepartureDateID) REFERENCES DimDate(DateID)
 );
 
--- Insert with TransactionID
 INSERT INTO DimJourney(
     TransactionID,
     DepartureStation,
@@ -217,7 +207,6 @@ SELECT
 FROM dbo.railway_data
 WHERE [Departure Timestamp] IS NOT NULL;
 
--- Now recreate FactJourney and insert with simple join
 CREATE TABLE FactJourney (
     FactID INT IDENTITY(1,1) PRIMARY KEY,
     JourneyID INT NOT NULL,
@@ -240,7 +229,6 @@ CREATE TABLE FactJourney (
     CONSTRAINT FK_FactJourney_ActualArrivalDate FOREIGN KEY (ActualArrivalDateID) REFERENCES DimDate(DateID)
 );
 
--- Simple insert with TransactionID join
 INSERT INTO FactJourney (
     JourneyID, TicketID, TransactionID, TravelDateID, ArrivalDateID, 
     ActualArrivalDateID, DelayDuration, Price, ReasonForDelay, 
@@ -267,4 +255,5 @@ JOIN DimTicket t
 JOIN DimPurchase p ON r.[Transaction ID] = p.TransactionID
 JOIN DimDate dTravel ON CONVERT(INT, FORMAT(r.[Departure Timestamp],'yyyyMMdd')) = dTravel.DateID
 JOIN DimDate dArrival ON CONVERT(INT, FORMAT(r.[Arrival Timestamp],'yyyyMMdd')) = dArrival.DateID
+
 LEFT JOIN DimDate dActualArrival ON CONVERT(INT, FORMAT(r.[Actual Arrival Timestamp],'yyyyMMdd')) = dActualArrival.DateID;
